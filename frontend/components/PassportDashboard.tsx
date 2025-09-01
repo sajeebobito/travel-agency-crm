@@ -6,6 +6,7 @@ import { PassportsList } from "./PassportsList";
 import { PassportForm } from "./PassportForm";
 import { PassportStats } from "./PassportStats";
 import { SearchAndFilter } from "./SearchAndFilter";
+import { ThemeToggle } from "./ThemeToggle";
 import backend from "~backend/client";
 import type { Passport, ListPassportsRequest } from "~backend/passport/types";
 
@@ -55,11 +56,9 @@ export function PassportDashboard() {
     <div className="container mx-auto p-4 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Passport Management System</h1>
-          <p className="text-muted-foreground">
-            Track and manage your passport applications and statuses
-          </p>
+          <h1 className="text-3xl font-bold tracking-tight">SH TRAVEL AGENCY DATA SERVER</h1>
         </div>
+        <ThemeToggle />
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
@@ -72,22 +71,14 @@ export function PassportDashboard() {
         </TabsList>
 
         <TabsContent value="dashboard" className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Passports</CardTitle>
+                <CardTitle className="text-sm font-medium">Not Applied</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{statsData?.total || 0}</div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Valid Passports</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-green-600">
-                  {statsData?.stats.valid || 0}
+                <div className="text-2xl font-bold text-gray-600">
+                  {statsData?.stats.not_applied || 0}
                 </div>
               </CardContent>
             </Card>
@@ -103,11 +94,51 @@ export function PassportDashboard() {
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Not Applied</CardTitle>
+                <CardTitle className="text-sm font-medium">Valid</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-gray-600">
-                  {statsData?.stats.not_applied || 0}
+                <div className="text-2xl font-bold text-green-600">
+                  {statsData?.stats.valid || 0}
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Rejected</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-red-600">
+                  {statsData?.stats.rejected || 0}
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Canceled</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-orange-600">
+                  {statsData?.stats.canceled || 0}
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Flight Complete</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-blue-600">
+                  {statsData?.stats.flight_complete || 0}
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="bg-primary/5 border-primary/20">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Passports</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-primary">
+                  {statsData?.total || 0}
                 </div>
               </CardContent>
             </Card>

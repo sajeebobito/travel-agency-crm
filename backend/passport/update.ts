@@ -19,13 +19,13 @@ export const update = api<UpdatePassportRequest, Passport>(
       updates.push(`passport_number = $${paramIndex++}`);
       params.push(req.passportNumber);
     }
-    if (req.nationality !== undefined) {
-      updates.push(`nationality = $${paramIndex++}`);
-      params.push(req.nationality);
-    }
     if (req.dateOfBirth !== undefined) {
       updates.push(`date_of_birth = $${paramIndex++}`);
       params.push(req.dateOfBirth);
+    }
+    if (req.issueDate !== undefined) {
+      updates.push(`issue_date = $${paramIndex++}`);
+      params.push(req.issueDate);
     }
     if (req.expiryDate !== undefined) {
       updates.push(`expiry_date = $${paramIndex++}`);
@@ -35,13 +35,25 @@ export const update = api<UpdatePassportRequest, Passport>(
       updates.push(`status = $${paramIndex++}`);
       params.push(req.status);
     }
-    if (req.applicationDate !== undefined) {
-      updates.push(`application_date = $${paramIndex++}`);
-      params.push(req.applicationDate);
+    if (req.jobCategory !== undefined) {
+      updates.push(`job_category = $${paramIndex++}`);
+      params.push(req.jobCategory);
     }
-    if (req.approvalDate !== undefined) {
-      updates.push(`approval_date = $${paramIndex++}`);
-      params.push(req.approvalDate);
+    if (req.totalCharge !== undefined) {
+      updates.push(`total_charge = $${paramIndex++}`);
+      params.push(req.totalCharge);
+    }
+    if (req.amountPaid !== undefined) {
+      updates.push(`amount_paid = $${paramIndex++}`);
+      params.push(req.amountPaid);
+    }
+    if (req.amountDue !== undefined) {
+      updates.push(`amount_due = $${paramIndex++}`);
+      params.push(req.amountDue);
+    }
+    if (req.passportImageUrl !== undefined) {
+      updates.push(`passport_image_url = $${paramIndex++}`);
+      params.push(req.passportImageUrl);
     }
     if (req.notes !== undefined) {
       updates.push(`notes = $${paramIndex++}`);

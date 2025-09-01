@@ -10,12 +10,15 @@ export interface PassportRow {
   id: number;
   name: string;
   passport_number: string;
-  nationality: string;
   date_of_birth: Date;
+  issue_date: Date | null;
   expiry_date: Date;
   status: PassportStatus;
-  application_date: Date | null;
-  approval_date: Date | null;
+  job_category: string | null;
+  total_charge: number;
+  amount_paid: number;
+  amount_due: number;
+  passport_image_url: string | null;
   notes: string | null;
   created_at: Date;
   updated_at: Date;
@@ -25,12 +28,15 @@ export interface Passport {
   id: number;
   name: string;
   passportNumber: string;
-  nationality: string;
   dateOfBirth: Date;
+  issueDate: Date | null;
   expiryDate: Date;
   status: PassportStatus;
-  applicationDate: Date | null;
-  approvalDate: Date | null;
+  jobCategory: string | null;
+  totalCharge: number;
+  amountPaid: number;
+  amountDue: number;
+  passportImageUrl: string | null;
   notes: string | null;
   createdAt: Date;
   updatedAt: Date;
@@ -39,12 +45,15 @@ export interface Passport {
 export interface CreatePassportRequest {
   name: string;
   passportNumber: string;
-  nationality: string;
   dateOfBirth: Date;
+  issueDate?: Date;
   expiryDate: Date;
   status: PassportStatus;
-  applicationDate?: Date;
-  approvalDate?: Date;
+  jobCategory?: string;
+  totalCharge?: number;
+  amountPaid?: number;
+  amountDue?: number;
+  passportImageUrl?: string;
   notes?: string;
 }
 
@@ -52,19 +61,23 @@ export interface UpdatePassportRequest {
   id: number;
   name?: string;
   passportNumber?: string;
-  nationality?: string;
   dateOfBirth?: Date;
+  issueDate?: Date;
   expiryDate?: Date;
   status?: PassportStatus;
-  applicationDate?: Date;
-  approvalDate?: Date;
+  jobCategory?: string;
+  totalCharge?: number;
+  amountPaid?: number;
+  amountDue?: number;
+  passportImageUrl?: string;
   notes?: string;
 }
 
 export interface ListPassportsRequest {
   search?: string;
   status?: PassportStatus;
-  sortBy?: "name" | "date" | "status";
+  jobCategory?: string;
+  sortBy?: "name" | "date" | "status" | "jobCategory";
   sortOrder?: "asc" | "desc";
   limit?: number;
   offset?: number;
@@ -85,4 +98,18 @@ export interface PassportStatsResponse {
     flight_complete: number;
   };
   total: number;
+}
+
+export interface JobCategory {
+  id: number;
+  name: string;
+  createdAt: Date;
+}
+
+export interface CreateJobCategoryRequest {
+  name: string;
+}
+
+export interface ListJobCategoriesResponse {
+  categories: JobCategory[];
 }

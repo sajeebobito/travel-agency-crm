@@ -10,13 +10,15 @@ export const create = api<CreatePassportRequest, Passport>(
     try {
       const row = await passportDB.queryRow`
         INSERT INTO passports (
-          name, passport_number, nationality, date_of_birth, expiry_date, 
-          status, application_date, approval_date, notes, updated_at
+          name, passport_number, date_of_birth, issue_date, expiry_date, 
+          status, job_category, total_charge, amount_paid, amount_due, 
+          passport_image_url, notes, updated_at
         ) VALUES (
-          ${req.name}, ${req.passportNumber}, ${req.nationality}, 
-          ${req.dateOfBirth}, ${req.expiryDate}, ${req.status}, 
-          ${req.applicationDate || null}, ${req.approvalDate || null}, 
-          ${req.notes || null}, CURRENT_TIMESTAMP
+          ${req.name}, ${req.passportNumber}, ${req.dateOfBirth}, 
+          ${req.issueDate || null}, ${req.expiryDate}, ${req.status}, 
+          ${req.jobCategory || null}, ${req.totalCharge || 0}, 
+          ${req.amountPaid || 0}, ${req.amountDue || 0}, 
+          ${req.passportImageUrl || null}, ${req.notes || null}, CURRENT_TIMESTAMP
         ) RETURNING *
       `;
 

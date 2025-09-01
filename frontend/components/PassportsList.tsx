@@ -20,8 +20,15 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { useToast } from "@/components/ui/use-toast";
-import { Edit, Trash2 } from "lucide-react";
+import { Edit, Trash2, Eye } from "lucide-react";
 import backend from "~backend/client";
 import type { Passport, ListPassportsResponse, PassportStatus } from "~backend/passport/types";
 
@@ -32,12 +39,12 @@ interface PassportsListProps {
 }
 
 const statusColors: Record<PassportStatus, string> = {
-  not_applied: "bg-gray-100 text-gray-800",
-  pending: "bg-yellow-100 text-yellow-800",
-  valid: "bg-green-100 text-green-800",
-  rejected: "bg-red-100 text-red-800",
-  canceled: "bg-orange-100 text-orange-800",
-  flight_complete: "bg-blue-100 text-blue-800",
+  not_applied: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200",
+  pending: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
+  valid: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
+  rejected: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
+  canceled: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200",
+  flight_complete: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
 };
 
 const statusLabels: Record<PassportStatus, string> = {
@@ -75,6 +82,13 @@ export function PassportsList({ data, onEdit, onDelete }: PassportsListProps) {
     return new Date(date).toLocaleDateString();
   };
 
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    }).format(amount);
+  };
+
   const passports = data?.passports || [];
 
   if (passports.length === 0) {
@@ -86,16 +100,17 @@ export function PassportsList({ data, onEdit, onDelete }: PassportsListProps) {
   }
 
   return (
-    <div className="rounded-md border">
+    <div className="rounded-md border overflow-x-auto">
       <Table>
         <TableHeader>
           <TableRow>
             <TableHead>Name</TableHead>
             <TableHead>Passport Number</TableHead>
-            <TableHead>Nationality</TableHead>
             <TableHead>Status</TableHead>
+            <TableHead>Issue Date</TableHead>
             <TableHead>Expiry Date</TableHead>
-            <TableHead>Application Date</TableHead>
+            <TableHead>Total Cost</TableHead>
+            <TableHead>Image</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -103,16 +118,43 @@ export function PassportsList({ data, onEdit, onDelete }: PassportsListProps) {
           {passports.map((passport) => (
             <TableRow key={passport.id}>
               <TableCell className="font-medium">{passport.name}</TableCell>
-              <TableCell>{passport.passportNumber}</TableCell>
-              <TableCell>{passport.nationality}</TableCell>
+              <TableCell className="font-mono text-sm">{passport.passportNumber}</TableCell>
               <TableCell>
                 <Badge className={statusColors[passport.status]}>
                   {statusLabels[passport.status]}
                 </Badge>
               </TableCell>
-              <TableCell>{formatDate(passport.expiryDate)}</TableCell>
               <TableCell>
-                {passport.applicationDate ? formatDate(passport.applicationDate) : "-"}
+                {passport.issueDate ? formatDate(passport.issueDate) : "-"}
+              </TableCell>
+              <TableCell>{formatDate(passport.expiryDate)}</TableCell>
+              <TableCell className="font-medium">
+                {formatCurrency(passport.totalCharge)}
+              </TableCell>
+              <TableCell>
+                {passport.passportImageUrl ? (
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" size="sm">
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-3xl">
+                      <DialogHeader>
+                        <DialogTitle>Passport Image - {passport.name}</DialogTitle>
+                      </DialogHeader>
+                      <div className="flex justify-center">
+                        <img
+                          src={passport.passportImageUrl}
+                          alt={`Passport for ${passport.name}`}
+                          className="max-w-full max-h-96 object-contain rounded-lg"
+                        />
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                ) : (
+                  <span className="text-muted-foreground text-sm">No image</span>
+                )}
               </TableCell>
               <TableCell className="text-right">
                 <div className="flex justify-end space-x-2">
