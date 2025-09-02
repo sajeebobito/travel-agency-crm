@@ -165,12 +165,45 @@ export function PassportForm({ passport, onSaved, onCancel }: PassportFormProps)
     const totalCharge = parseFloat(formData.totalCharge) || 0;
     const amountPaid = parseFloat(formData.amountPaid) || 0;
 
+    // Convert date strings to Date objects
+    const dateOfBirth = new Date(formData.dateOfBirth + 'T00:00:00.000Z');
+    const expiryDate = new Date(formData.expiryDate + 'T00:00:00.000Z');
+    const issueDate = formData.issueDate ? new Date(formData.issueDate + 'T00:00:00.000Z') : undefined;
+
+    // Validate dates
+    if (isNaN(dateOfBirth.getTime())) {
+      toast({
+        title: "Error",
+        description: "Invalid date of birth",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (isNaN(expiryDate.getTime())) {
+      toast({
+        title: "Error",
+        description: "Invalid expiry date",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (issueDate && isNaN(issueDate.getTime())) {
+      toast({
+        title: "Error",
+        description: "Invalid issue date",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const baseData = {
       name: formData.name.trim(),
       passportNumber: formData.passportNumber.trim(),
-      dateOfBirth: formData.dateOfBirth,
-      issueDate: formData.issueDate || undefined,
-      expiryDate: formData.expiryDate,
+      dateOfBirth: dateOfBirth,
+      issueDate: issueDate,
+      expiryDate: expiryDate,
       status: formData.status,
       jobCategory: formData.jobCategory.trim() || undefined,
       totalCharge: totalCharge,

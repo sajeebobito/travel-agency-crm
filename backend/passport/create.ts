@@ -13,19 +13,15 @@ export const create = api<CreatePassportRequest, Passport>(
       const amountPaid = req.amountPaid || 0;
       const amountDue = totalCharge - amountPaid;
 
-      // Validate dates
-      const dateOfBirth = new Date(req.dateOfBirth);
-      const expiryDate = new Date(req.expiryDate);
-      const issueDate = req.issueDate ? new Date(req.issueDate) : null;
-
-      if (isNaN(dateOfBirth.getTime())) {
-        throw APIError.invalidArgument("Invalid date of birth");
+      // Validate that dates are Date objects
+      if (!(req.dateOfBirth instanceof Date)) {
+        throw APIError.invalidArgument("Date of birth must be a valid date");
       }
-      if (isNaN(expiryDate.getTime())) {
-        throw APIError.invalidArgument("Invalid expiry date");
+      if (!(req.expiryDate instanceof Date)) {
+        throw APIError.invalidArgument("Expiry date must be a valid date");
       }
-      if (issueDate && isNaN(issueDate.getTime())) {
-        throw APIError.invalidArgument("Invalid issue date");
+      if (req.issueDate && !(req.issueDate instanceof Date)) {
+        throw APIError.invalidArgument("Issue date must be a valid date");
       }
 
       const row = await passportDB.queryRow`
@@ -47,9 +43,9 @@ export const create = api<CreatePassportRequest, Passport>(
         ) VALUES (
           ${req.name}, 
           ${req.passportNumber}, 
-          ${dateOfBirth}, 
-          ${issueDate}, 
-          ${expiryDate}, 
+          ${req.dateOfBirth}, 
+          ${req.issueDate || null}, 
+          ${req.expiryDate}, 
           ${req.status}, 
           ${req.jobCategory || null}, 
           ${totalCharge}, 

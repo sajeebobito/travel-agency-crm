@@ -21,33 +21,30 @@ export const update = api<UpdatePassportRequest, Passport>(
         params.push(req.passportNumber);
       }
       if (req.dateOfBirth !== undefined) {
-        const dateOfBirth = new Date(req.dateOfBirth);
-        if (isNaN(dateOfBirth.getTime())) {
-          throw APIError.invalidArgument("Invalid date of birth");
+        if (!(req.dateOfBirth instanceof Date)) {
+          throw APIError.invalidArgument("Date of birth must be a valid date");
         }
         updates.push(`date_of_birth = $${paramIndex++}`);
-        params.push(dateOfBirth);
+        params.push(req.dateOfBirth);
       }
       if (req.issueDate !== undefined) {
         if (req.issueDate === null) {
           updates.push(`issue_date = $${paramIndex++}`);
           params.push(null);
         } else {
-          const issueDate = new Date(req.issueDate);
-          if (isNaN(issueDate.getTime())) {
-            throw APIError.invalidArgument("Invalid issue date");
+          if (!(req.issueDate instanceof Date)) {
+            throw APIError.invalidArgument("Issue date must be a valid date");
           }
           updates.push(`issue_date = $${paramIndex++}`);
-          params.push(issueDate);
+          params.push(req.issueDate);
         }
       }
       if (req.expiryDate !== undefined) {
-        const expiryDate = new Date(req.expiryDate);
-        if (isNaN(expiryDate.getTime())) {
-          throw APIError.invalidArgument("Invalid expiry date");
+        if (!(req.expiryDate instanceof Date)) {
+          throw APIError.invalidArgument("Expiry date must be a valid date");
         }
         updates.push(`expiry_date = $${paramIndex++}`);
-        params.push(expiryDate);
+        params.push(req.expiryDate);
       }
       if (req.status !== undefined) {
         updates.push(`status = $${paramIndex++}`);

@@ -52,7 +52,6 @@ export interface CreatePassportRequest {
   jobCategory?: string;
   totalCharge?: number;
   amountPaid?: number;
-  amountDue?: number;
   passportImageUrl?: string;
   notes?: string;
 }
