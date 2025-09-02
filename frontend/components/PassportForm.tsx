@@ -37,7 +37,9 @@ export function PassportForm({ passport, onSaved, onCancel }: PassportFormProps)
     issueDate: passport?.issueDate ? new Date(passport.issueDate).toISOString().split('T')[0] : "",
     expiryDate: passport?.expiryDate ? new Date(passport.expiryDate).toISOString().split('T')[0] : "",
     status: passport?.status || "not_applied" as PassportStatus,
+    jobCategory: passport?.jobCategory || "",
     totalCharge: passport?.totalCharge?.toString() || "0",
+    amountPaid: passport?.amountPaid?.toString() || "0",
     passportImageUrl: passport?.passportImageUrl || "",
     notes: passport?.notes || "",
   });
@@ -130,7 +132,9 @@ export function PassportForm({ passport, onSaved, onCancel }: PassportFormProps)
       issueDate: formData.issueDate ? new Date(formData.issueDate) : undefined,
       expiryDate: new Date(formData.expiryDate),
       status: formData.status,
+      jobCategory: formData.jobCategory.trim() || undefined,
       totalCharge: parseFloat(formData.totalCharge) || 0,
+      amountPaid: parseFloat(formData.amountPaid) || 0,
       passportImageUrl: imageUrl || undefined,
       notes: formData.notes.trim() || undefined,
     };
@@ -150,6 +154,11 @@ export function PassportForm({ passport, onSaved, onCancel }: PassportFormProps)
   };
 
   const isLoading = createMutation.isPending || updateMutation.isPending;
+
+  // Calculate amount due automatically
+  const totalCharge = parseFloat(formData.totalCharge) || 0;
+  const amountPaid = parseFloat(formData.amountPaid) || 0;
+  const amountDue = totalCharge - amountPaid;
 
   return (
     <div className="space-y-6">
@@ -201,6 +210,17 @@ export function PassportForm({ passport, onSaved, onCancel }: PassportFormProps)
             </div>
 
             <div className="space-y-2">
+              <Label htmlFor="jobCategory">Job Category</Label>
+              <Input
+                id="jobCategory"
+                value={formData.jobCategory}
+                onChange={(e) => handleChange("jobCategory", e.target.value)}
+                disabled={isLoading}
+                placeholder="Enter job category"
+              />
+            </div>
+
+            <div className="space-y-2">
               <Label htmlFor="dateOfBirth">Date of Birth *</Label>
               <Input
                 id="dateOfBirth"
@@ -249,6 +269,28 @@ export function PassportForm({ passport, onSaved, onCancel }: PassportFormProps)
                 disabled={isLoading}
                 placeholder="0.00"
               />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="amountPaid">Amount Paid ($)</Label>
+              <Input
+                id="amountPaid"
+                type="number"
+                step="0.01"
+                min="0"
+                max={totalCharge}
+                value={formData.amountPaid}
+                onChange={(e) => handleChange("amountPaid", e.target.value)}
+                disabled={isLoading}
+                placeholder="0.00"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Amount Due ($)</Label>
+              <div className="px-3 py-2 bg-muted rounded-md text-sm">
+                ${amountDue.toFixed(2)}
+              </div>
             </div>
           </div>
         </div>

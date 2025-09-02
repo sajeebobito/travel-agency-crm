@@ -8,6 +8,10 @@ export const create = api<CreatePassportRequest, Passport>(
   { expose: true, method: "POST", path: "/passports" },
   async (req) => {
     try {
+      const totalCharge = req.totalCharge || 0;
+      const amountPaid = req.amountPaid || 0;
+      const amountDue = totalCharge - amountPaid;
+
       const row = await passportDB.queryRow`
         INSERT INTO passports (
           name, passport_number, date_of_birth, issue_date, expiry_date, 
@@ -16,8 +20,8 @@ export const create = api<CreatePassportRequest, Passport>(
         ) VALUES (
           ${req.name}, ${req.passportNumber}, ${req.dateOfBirth}, 
           ${req.issueDate || null}, ${req.expiryDate}, ${req.status}, 
-          ${req.jobCategory || null}, ${req.totalCharge || 0}, 
-          ${req.amountPaid || 0}, ${req.amountDue || 0}, 
+          ${req.jobCategory || null}, ${totalCharge}, 
+          ${amountPaid}, ${amountDue}, 
           ${req.passportImageUrl || null}, ${req.notes || null}, CURRENT_TIMESTAMP
         ) RETURNING *
       `;

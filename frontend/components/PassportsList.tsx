@@ -107,9 +107,12 @@ export function PassportsList({ data, onEdit, onDelete }: PassportsListProps) {
             <TableHead>Name</TableHead>
             <TableHead>Passport Number</TableHead>
             <TableHead>Status</TableHead>
+            <TableHead>Job Category</TableHead>
             <TableHead>Issue Date</TableHead>
             <TableHead>Expiry Date</TableHead>
             <TableHead>Total Cost</TableHead>
+            <TableHead>Amount Paid</TableHead>
+            <TableHead>Amount Due</TableHead>
             <TableHead>Image</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
@@ -124,12 +127,19 @@ export function PassportsList({ data, onEdit, onDelete }: PassportsListProps) {
                   {statusLabels[passport.status]}
                 </Badge>
               </TableCell>
+              <TableCell>{passport.jobCategory || "-"}</TableCell>
               <TableCell>
                 {passport.issueDate ? formatDate(passport.issueDate) : "-"}
               </TableCell>
               <TableCell>{formatDate(passport.expiryDate)}</TableCell>
               <TableCell className="font-medium">
                 {formatCurrency(passport.totalCharge)}
+              </TableCell>
+              <TableCell className="font-medium text-green-600">
+                {formatCurrency(passport.amountPaid)}
+              </TableCell>
+              <TableCell className="font-medium text-red-600">
+                {formatCurrency(passport.amountDue)}
               </TableCell>
               <TableCell>
                 {passport.passportImageUrl ? (
