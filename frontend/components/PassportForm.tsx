@@ -117,6 +117,43 @@ export function PassportForm({ passport, onSaved, onCancel }: PassportFormProps)
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Validate required fields
+    if (!formData.name.trim()) {
+      toast({
+        title: "Error",
+        description: "Name is required",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!formData.passportNumber.trim()) {
+      toast({
+        title: "Error",
+        description: "Passport number is required",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!formData.dateOfBirth) {
+      toast({
+        title: "Error",
+        description: "Date of birth is required",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!formData.expiryDate) {
+      toast({
+        title: "Error",
+        description: "Expiry date is required",
+        variant: "destructive",
+      });
+      return;
+    }
+
     let imageUrl = formData.passportImageUrl;
 
     // In a real application, you would upload the image to a cloud service like AWS S3
@@ -125,16 +162,19 @@ export function PassportForm({ passport, onSaved, onCancel }: PassportFormProps)
       imageUrl = imagePreview || "";
     }
 
+    const totalCharge = parseFloat(formData.totalCharge) || 0;
+    const amountPaid = parseFloat(formData.amountPaid) || 0;
+
     const baseData = {
       name: formData.name.trim(),
       passportNumber: formData.passportNumber.trim(),
-      dateOfBirth: new Date(formData.dateOfBirth),
-      issueDate: formData.issueDate ? new Date(formData.issueDate) : undefined,
-      expiryDate: new Date(formData.expiryDate),
+      dateOfBirth: formData.dateOfBirth,
+      issueDate: formData.issueDate || undefined,
+      expiryDate: formData.expiryDate,
       status: formData.status,
       jobCategory: formData.jobCategory.trim() || undefined,
-      totalCharge: parseFloat(formData.totalCharge) || 0,
-      amountPaid: parseFloat(formData.amountPaid) || 0,
+      totalCharge: totalCharge,
+      amountPaid: amountPaid,
       passportImageUrl: imageUrl || undefined,
       notes: formData.notes.trim() || undefined,
     };
